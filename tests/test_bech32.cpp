@@ -9,15 +9,6 @@
 
 #define EXPECT_ZERO(x) EXPECT_EQ((x), 0)
 
-namespace bech32 {
-
-typedef std::vector<uint8_t> data;
-/** Encode a Bech32 string. */
-std::string Encode(const std::string& hrp, const data& values);
-/** Decode a Bech32 string. */
-std::pair<std::string, data> Decode(const std::string& str);
-}  // namespace bech32
-
 TEST(bech32, custom) {
   static const std::string CASES[] = {
       "A12UEL5L",
@@ -30,30 +21,65 @@ TEST(bech32, custom) {
       "split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w",
       "?1ezyfcl",
   };
+  static const std::string PREFIXES[] = {
+      "a",
+      "a",
+      "an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedch"
+      "aractersbio",
+      "abcdef",
+      "1",
+      "split",
+      "?",
+  };
+  static const uint8_t data4[] = {
+      0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a,
+      0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15,
+      0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+  };
+  static const uint8_t data6[] = {
+      0x18, 0x17, 0x19, 0x18, 0x16, 0x1c, 0x01, 0x10, 0x0b, 0x1d, 0x08, 0x19,
+      0x17, 0x1d, 0x13, 0x0d, 0x10, 0x17, 0x1d, 0x16, 0x19, 0x1c, 0x01, 0x10,
+      0x0b, 0x03, 0x19, 0x1d, 0x1b, 0x19, 0x03, 0x03, 0x1d, 0x13, 0x0b, 0x19,
+      0x03, 0x03, 0x19, 0x0d, 0x18, 0x1d, 0x01, 0x19, 0x03, 0x03, 0x19, 0x0d,
+  };
+  const std::vector<uint8_t> DATAS[] = {
+      std::vector<uint8_t>(),
+      std::vector<uint8_t>(),
+      std::vector<uint8_t>(),
+      std::vector<uint8_t>(data4, data4 + sizeof(data4)),
+      std::vector<uint8_t>(82, 0),
+      std::vector<uint8_t>(data6, data6 + sizeof(data6)),
+      std::vector<uint8_t>(),
+  };
   char buffer[256];
   char hrp[256];
-  for (const std::string& str : CASES) {
+
+  assert(_countof_(CASES) == _countof_(PREFIXES));
+  assert(_countof_(CASES) == _countof_(DATAS));
+
+  for (size_t i = 0; i < _countof_(CASES); i++) {
     memset(buffer, 0, sizeof(buffer));
     memset(hrp, 0, sizeof(hrp));
     size_t hrp_size = sizeof(hrp);
     size_t buf_size = sizeof(buffer);
 
-    auto ret = bech32::Decode(str);
-    EXPECT_EQ(bech32_encode_len(ret.first.size(), ret.second.size()),
-              str.size());
+    std::string str = CASES[i];
+    std::string first = PREFIXES[i];
+    std::vector<uint8_t> second = DATAS[i];
+    EXPECT_EQ(bech32_encode_len(first.size(), second.size()), str.size());
 
-    bech32_encode(ret.first.c_str(), ret.first.size(), ret.second.data(),
-                  ret.second.size(), buffer);
+    bech32_encode(first.c_str(), first.size(), second.data(), second.size(),
+                  buffer);
     EXPECT_STRCASEEQ(str.c_str(), buffer);
 
     EXPECT_TRUE(bech32_decode(str.c_str(), str.size(), hrp, &hrp_size, buffer,
                               &buf_size));
-    EXPECT_EQ(hrp_size, ret.first.size());
+    EXPECT_EQ(hrp_size, first.size());
     hrp[hrp_size] = '\0';
-    EXPECT_STRCASEEQ(ret.first.c_str(), hrp);
-    EXPECT_EQ(buf_size, ret.second.size());
-    if (ret.second.data()) {
-      EXPECT_ZERO(memcmp(buffer, ret.second.data(), buf_size));
+    EXPECT_STRCASEEQ(first.c_str(), hrp);
+    EXPECT_EQ(buf_size, second.size());
+    if (second.data()) {
+      EXPECT_ZERO(memcmp(buffer, second.data(), buf_size));
     }
   }
 }
@@ -80,7 +106,8 @@ TEST(bech32, bip173_testvectors_invalid) {
   };
   char hrp[256];
   char buf[256];
-  for (const std::string& str : CASES) {
+  for (size_t i = 0; i < _countof_(CASES); i++) {
+    std::string str = CASES[i];
     size_t hrp_size = sizeof(hrp_size);
     size_t buf_size = sizeof(buf);
     EXPECT_FALSE(

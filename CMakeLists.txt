@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_C_STANDARD 99)
+set(C_STANDARD_REQUIRED ON)
+
 option(BUILD_TESTING "Enable test (depends on googletest)." OFF)
 option(BUILD_VALGRIND "Enable valgrind (depends on BUILD_TESTING)." OFF)
 option(BUILD_EXTERNAL "Enable build external" ON)
