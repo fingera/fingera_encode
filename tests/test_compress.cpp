@@ -195,3 +195,19 @@ TEST(compress, illegal_integer) {
     EXPECT_ZERO(zigzag_decode(buffer, i, &iout));
   }
 }
+
+TEST(compress, compact_size) {
+  uint64_t values[] = {
+      0,       0xFC,         0xFD,          0xFFFF,
+      0x10000, 0xFFFFFFFFul, 0x100000000ul, 0xFFFFFFFFFFFFFFFFull,
+  };
+  char buf[9];
+  for (size_t i = 0; i < _countof_(values); i++) {
+    size_t size = compactsize_encode(values[i], buf);
+    EXPECT_LE(size, sizeof(buf));
+    uint64_t out;
+    size_t size_decode = compactsize_decode(buf, size, &out);
+    EXPECT_EQ(size_decode, size);
+    EXPECT_EQ(values[i], out);
+  }
+}

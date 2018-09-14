@@ -60,6 +60,9 @@ TEST(hex, exhaustive) {
     EXPECT_EQ(hex_decode(out_result, i * 2, out_buf), i);
     EXPECT_ZERO(memcmp(out_buf, buf, i));
     EXPECT_ZERO(memcmp(out_buf + i, out_result_zero, sizeof(out_buf) - i));
+
+    hex_reverse_encode(buf, i, out_result, 1);
+    EXPECT_EQ(hex_reverse_decode(out_result, i * 2, out_buf), i);
   }
 }
 

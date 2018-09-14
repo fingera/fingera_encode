@@ -29,6 +29,10 @@ TEST(base32, custom) {
     EXPECT_EQ(vstrIn[i], out_char);
 
     memset(out_char, 0, sizeof(out_char));
+
+    EXPECT_GE(base32raw_encode_max_len(vstrIn[i].size()), vstrOut[i].size());
+    EXPECT_GE(base32raw_decode_max_len(vstrOut[i].size()), vstrIn[i].size());
+
     out_size = base32raw_encode(vstrIn[i].c_str(), vstrIn[i].size(), out_char);
     char values[256];
     size_t size_of_values = base32raw_decode(out_char, out_size, values);

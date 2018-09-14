@@ -18,6 +18,7 @@ add_library(fingera_encode
   src/base64.c
   src/base58.c
   src/compress.c
+  src/eos_name.c
 )
 
 target_link_libraries(fingera_encode fingera_header)

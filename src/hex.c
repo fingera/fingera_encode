@@ -78,7 +78,7 @@ size_t hex_reverse_decode(const char *str, size_t str_len, void *buf) {
   unsigned char high, low;
   unsigned char *out = (unsigned char *)buf;
   str_len &= ~(size_t)1;
-  for (int i = (int)str_len; i >= 0; i -= 2) {
+  for (int i = (int)str_len - 2; i >= 0; i -= 2) {
     high = HEX_MAP[(unsigned char)str[i]];
     low = HEX_MAP[(unsigned char)str[i + 1]];
     if (high == 0xFF || low == 0xFF) break;

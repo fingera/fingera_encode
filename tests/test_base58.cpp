@@ -55,6 +55,7 @@ TEST(base58, custom) {
   EXPECT_EQ(base58_decode(" vYxp6yFC7qiVtK1RcGQQt3L6EqTc8YhEDLnSMLqDvp8D aa",
                           48, out_char),
             0);
+  EXPECT_EQ(base58_decode("O0oO", 4, out_char), 0);
 
   encdec_test("", "");
   encdec_test("61", "2g");

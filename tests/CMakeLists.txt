@@ -6,6 +6,7 @@ add_executable( test_fingera_encode
   test_base64.cpp
   test_compress.cpp
   test_bech32.cpp
+  test_eos_name.cpp
 )
 
 target_link_libraries( test_fingera_encode fingera_encode gtest_main )
