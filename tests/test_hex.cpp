@@ -67,7 +67,11 @@ TEST(hex, exhaustive) {
 }
 
 TEST(hex, custom) {
-  uint8_t buf[256];
+  uint8_t buf[1024] = {0};
+  hex_dump(buf, sizeof(buf));
+
+  EXPECT_EQ(hex_encode_len(5), 10);
+  EXPECT_EQ(hex_decode_max_len(10), 5);
 
   EXPECT_EQ(hex_decode("00112233", 6, buf), 3);
   EXPECT_EQ(hex_decode("00112233", 7, buf), 3);

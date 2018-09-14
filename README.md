@@ -15,3 +15,4 @@ fingera_encode 编码算法
    compactsize
 5. hex
    reverse_hex
+6. eosname(id)
