@@ -100,10 +100,8 @@ TEST(eos_name, custom) {
   };
   for (size_t i = 0; i < _countof_(test_list); i++) {
     const std::string& str = test_list[i];
-    uint64_t id = eos_name_encode(str.c_str(), str.size());
+    uint64_t id = eos_name_encode(str);
     EXPECT_EQ(id, N(str.c_str()));
-    char buf[13];
-    size_t size = eos_name_decode(id, buf);
-    EXPECT_EQ(to_string(id), std::string(buf, buf + size));
+    EXPECT_EQ(to_string(id), eos_name_decode(id));
   }
 }
