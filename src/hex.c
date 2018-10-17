@@ -54,7 +54,7 @@ void hex_reverse_encode(const void *buf, size_t buf_size, char *str,
   unsigned char byte;
   unsigned char *bytes = (unsigned char *)buf;
   const char *hex_str = upper ? HEX_STRING_UPPER : HEX_STRING_LOWER;
-  for (int i = (size_t)buf_size; i >= 0; i--) {
+  for (int i = (int)buf_size; i >= 0; i--) {
     byte = bytes[i];
     str[0] = hex_str[byte >> 4];
     str[1] = hex_str[byte & 0xF];
